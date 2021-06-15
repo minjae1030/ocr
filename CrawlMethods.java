@@ -1,6 +1,5 @@
 import java.util.HashMap;
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -32,13 +31,12 @@ public class CrawlMethods {
 	
 	// pdf 최신형식 마지막까지 반복하며 pdf파일 저장하기
 	public boolean enterPost() throws InterruptedException {
-		int boardNumber = 1, rows = 0, iter = 0;
+		int boardNumber = 1, rows = 0, iter = 0, pdfNumber;
 		String lastNumber = "";
 		boolean isOver = false;
 		List row = driver.findElements(By.tagName("tr"));
 		rows = row.size() - 1;
 		iter = rows;
-
 		for (int i = 0; i < iter; i++) {
 			lastNumber = driver
 					.findElement(By.xpath("/html/body/form/div/section/div[1]/div/div[2]/div/div[2]/table/tbody/tr["
@@ -54,7 +52,9 @@ public class CrawlMethods {
 							+ boardNumber + "]/td[2]/a")).click();
 			Thread.sleep(3000);
 			
-			driver.findElement(By.xpath("/html/body/form/div/section/div[1]/div/div[2]/div/div[2]/table/tbody/tr[3]/td/a[3]")).click();
+			
+			pdfNumber = findPDF();
+			driver.findElement(By.xpath("/html/body/form/div/section/div[1]/div/div[2]/div/div[2]/table/tbody/tr[3]/td/a[" + pdfNumber +"]")).click();
 			Thread.sleep(1500);
 			
 			driver.findElement(
@@ -68,6 +68,20 @@ public class CrawlMethods {
 		}	
 		return isOver;
 	}
+	
+	public int findPDF() {
+		int num = 3;
+		String finder;
+		for (int i = 3; i > 0; i--) {
+			finder = driver.findElement(By.xpath("/html/body/form/div/section/div[1]/div/div[2]/div/div[2]/table/tbody/tr[3]/td/a[" +i +"]")).getText();
+			if (finder.endsWith(".pdf")) {
+				num = i;
+			}
+		}
+		return num;
+		
+	}
+	
 	
 	// 현재 페이지 번호 얻기
 	public int getPageNumber() {
